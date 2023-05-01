@@ -22,6 +22,7 @@ class BooksListViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = .lightGray
         self.fetchBooksListData()
+        self.fetchCoversImageData()
     }
     
     // MARK: - Fetch Data
@@ -39,6 +40,12 @@ class BooksListViewController: UIViewController {
                 self.alertForError(error)
             }
         }
+    }
+    
+    private func fetchCoversImageData() {
+        let imgUrl = BooksApiURLs.coversApiUrlOlid.rawValue.createImageApiURL(coverEditionKey: "OL28172760M", sizeOfImage: .medium)
+        print(imgUrl)
+        
     }
 
 

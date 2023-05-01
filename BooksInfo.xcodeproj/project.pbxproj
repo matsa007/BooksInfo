@@ -17,6 +17,7 @@
 		4929C4712A006B5A00D41F5B /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4929C4702A006B5A00D41F5B /* NetworkManager.swift */; };
 		4929C4742A006C8F00D41F5B /* BooksListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4929C4732A006C8F00D41F5B /* BooksListModel.swift */; };
 		4929C47A2A00771A00D41F5B /* UIViewController+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4929C4792A00771A00D41F5B /* UIViewController+Ex.swift */; };
+		4929C47C2A007A7000D41F5B /* String+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4929C47B2A007A7000D41F5B /* String+Ex.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		4929C4702A006B5A00D41F5B /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		4929C4732A006C8F00D41F5B /* BooksListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksListModel.swift; sourceTree = "<group>"; };
 		4929C4792A00771A00D41F5B /* UIViewController+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Ex.swift"; sourceTree = "<group>"; };
+		4929C47B2A007A7000D41F5B /* String+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Ex.swift"; sourceTree = "<group>"; };
 		D7A3BEBF91F34E98A5134FB2 /* Pods-BooksInfo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BooksInfo.debug.xcconfig"; path = "Target Support Files/Pods-BooksInfo/Pods-BooksInfo.debug.xcconfig"; sourceTree = "<group>"; };
 		E2745C7020868841122C043F /* Pods-BooksInfo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BooksInfo.release.xcconfig"; path = "Target Support Files/Pods-BooksInfo/Pods-BooksInfo.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -128,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				4929C4792A00771A00D41F5B /* UIViewController+Ex.swift */,
+				4929C47B2A007A7000D41F5B /* String+Ex.swift */,
 			);
 			path = Exstensions;
 			sourceTree = "<group>";
@@ -255,6 +258,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4929C45C2A0064A700D41F5B /* BooksListViewController.swift in Sources */,
+				4929C47C2A007A7000D41F5B /* String+Ex.swift in Sources */,
 				4929C4582A0064A700D41F5B /* AppDelegate.swift in Sources */,
 				4929C4712A006B5A00D41F5B /* NetworkManager.swift in Sources */,
 				4929C47A2A00771A00D41F5B /* UIViewController+Ex.swift in Sources */,
