@@ -36,7 +36,7 @@ class BooksListViewController: UIViewController {
                     print("BOOKS LIST == \(self.booksList)")
                 }
             case .failure(let error):
-                print(error.localizedDescription)
+                self.alertForError(error)
             }
         }
     }
