@@ -48,12 +48,16 @@ class BooksListViewController: UIViewController {
     private func fetchCoversImageData(booksList: [BookInfo]) {
         booksList.forEach { bookInfo in
             let imgUrl = BooksApiURLs.coversApiUrlOlid.rawValue.createImageApiURL(coverEditionKey: bookInfo.coverEditionKey, sizeOfImage: .medium)
-            print("IMAGE URL = \(imgUrl)")
-
+            NetworkManager.shared.getImageData(from: imgUrl) { [weak self] (result: Result<Data, Error>) in
+                guard let self = self else { return }
+                switch result {
+                case .success(let imageData):
+                    print("IMAGE DATA == \(imageData)")
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
         }
-        
     }
-
-
 }
 
