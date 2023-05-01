@@ -20,6 +20,8 @@ class BooksListViewController: UIViewController {
         }
     }
     
+    private var displayData: [DisplayData] = []
+    
     // MARK: - ViewController Life Cycle
     
     override func viewDidLoad() {
@@ -57,6 +59,26 @@ class BooksListViewController: UIViewController {
                     print(error.localizedDescription)
                 }
             }
+        }
+    }
+}
+
+extension BooksListViewController {
+    struct DisplayData {
+        let title: String
+        let firstPublishYear: Int?
+        let bookKey: String
+        let bookRating: Double?
+        let coverEditionKey: String
+        let imageCoverData: Data?
+        
+        init(bookInfoData: BookInfo, imageCoverData: Data?) {
+            self.title = bookInfoData.title
+            self.firstPublishYear = bookInfoData.firstPublishYear
+            self.bookKey = bookInfoData.key
+            self.bookRating = bookInfoData.ratingsAverage
+            self.coverEditionKey = bookInfoData.coverEditionKey
+            self.imageCoverData = imageCoverData
         }
     }
 }
