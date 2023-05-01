@@ -14,6 +14,8 @@ class BooksListViewController: UIViewController {
     
     typealias BookInfo = BooksListModel.BookInfo
     
+    private var booksList: [BookInfo] = []
+    
     // MARK: - ViewController Life Cycle
     
     override func viewDidLoad() {
@@ -29,7 +31,10 @@ class BooksListViewController: UIViewController {
             guard let self else { return }
             switch result {
             case .success(let data):
-                print(data)
+                DispatchQueue.main.async {
+                    self.booksList = data.docs
+                    print("BOOKS LIST == \(self.booksList)")
+                }
             case .failure(let error):
                 print(error.localizedDescription)
             }
