@@ -9,7 +9,13 @@ import UIKit
 import SnapKit
 
 class BooksListViewController: UIViewController {
-
+    
+    // MARK: - Parameters
+    
+    typealias BookInfo = BooksListModel.BookInfo
+    
+    // MARK: - ViewController Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .lightGray
