@@ -19,6 +19,21 @@ class BooksListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .lightGray
+        self.fetchBooksListData()
+    }
+    
+    // MARK: - Fetch Data
+    
+    private func fetchBooksListData() {
+        NetworkManager.shared.makeRequest(to: BooksApiURLs.booksInfoApiURL.rawValue) { [weak self] (result: Result<BooksListModel, Error>) in
+            guard let self else { return }
+            switch result {
+            case .success(let data):
+                print(data)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 
 

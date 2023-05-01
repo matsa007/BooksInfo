@@ -14,7 +14,7 @@ struct BooksListModel: Codable {
         let firstPublishYear: Int?
         let ratingsAverage: Double?
         let coverEditionKey: String
-
+        
         enum CodingKeys: String, CodingKey {
             case key
             case title
