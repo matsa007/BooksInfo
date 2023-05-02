@@ -20,14 +20,43 @@ class BooksListViewController: UIViewController {
         }
     }
     
-    private var displayData: [DisplayData] = []
+    private var displayData: [DisplayData] = [] {
+        didSet {
+            print("DISPLAY DATA == \(self.displayData)")
+            self.booksListTableView.reloadData()
+        }
+    }
+    
+    // MARK: - GUI
+    
+    private lazy var booksListTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(BooksListTableViewCell.self, forCellReuseIdentifier: "BooksListTableViewCell")
+        tableView.backgroundColor = .red
+        return tableView
+    }()
     
     // MARK: - ViewController Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .lightGray
+        self.view.addSubview(self.booksListTableView)
+        self.setConstraints()
         self.fetchBooksListData()
+    }
+    
+    // MARK: - Constraints
+    
+    private func setConstraints() {
+        self.booksListTableView.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.left.equalToSuperview()
+            $0.right.equalToSuperview()
+            $0.bottom.equalToSuperview()
+        }
     }
     
     // MARK: - Fetch Data
@@ -39,7 +68,6 @@ class BooksListViewController: UIViewController {
             case .success(let data):
                 DispatchQueue.main.async {
                     self.booksList = data.docs
-                    print("BOOKS LIST == \(self.booksList)")
                 }
             case .failure(let error):
                 self.alertForError(error)
@@ -54,14 +82,23 @@ class BooksListViewController: UIViewController {
                 guard let self = self else { return }
                 switch result {
                 case .success(let imageData):
-                    print("IMAGE DATA == \(imageData)")
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self else { return }
+                        self.displayData.append(.init(bookInfoData: bookInfo, imageCoverData: imageData))
+                    }
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self else { return }
+                        self.displayData.append(.init(bookInfoData: bookInfo, imageCoverData: nil))
+                        print(error.localizedDescription)
+                    }
                 }
             }
         }
     }
 }
+
+// MARK: - Extensions
 
 extension BooksListViewController {
     struct DisplayData {
@@ -83,3 +120,18 @@ extension BooksListViewController {
     }
 }
 
+extension BooksListViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("NUMBER OF ROWS == \(self.displayData.count)")
+        return self.displayData.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "BooksListTableViewCell", for: indexPath)
+                as? BooksListTableViewCell else { return UITableViewCell() }
+        
+        return cell
+    }
+    
+    
+}
