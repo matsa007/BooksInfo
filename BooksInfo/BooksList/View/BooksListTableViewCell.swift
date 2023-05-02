@@ -7,17 +7,96 @@
 
 import UIKit
 
-class BooksListTableViewCell: UITableViewCell {
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+final class BooksListTableViewCell: UITableViewCell {
+    
+    // MARK: - GUI
+    
+    private lazy var commonBookInfoStackView : UIStackView = {
+        let stackView = UIStackView()
+        stackView.spacing = 20
+        stackView.axis = .horizontal
+        return stackView
+    }()
+    
+    private lazy var booksCoverImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+    
+    private lazy var bookInfoStackView : UIStackView = {
+        let stackView = UIStackView()
+        stackView.spacing = 20
+        return stackView
+    }()
+    
+    private lazy var booksTitleLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .left
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    private lazy var booksPublishingYearLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textAlignment = .left
+        return label
+    }()
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.addSubviews()
+        self.setConstrains()
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.booksTitleLabel.text = nil
+        self.booksPublishingYearLabel.text = nil
+        self.booksCoverImageView.image = nil
     }
-
+    
+    private func addSubviews() {
+        self.contentView.addSubview(self.commonBookInfoStackView)
+        self.commonBookInfoStackView.addSubview(self.booksCoverImageView)
+        self.commonBookInfoStackView.addSubview(self.bookInfoStackView)
+        self.bookInfoStackView.addSubview(self.booksTitleLabel)
+        self.bookInfoStackView.addSubview(self.booksPublishingYearLabel)
+    }
+    
+    private func setConstrains() {
+        self.commonBookInfoStackView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        self.booksCoverImageView.snp.makeConstraints {
+            $0.right.equalTo(self.bookInfoStackView.snp.left)
+            $0.top.bottom.left.equalToSuperview()
+        }
+        
+        self.bookInfoStackView.snp.makeConstraints {
+            $0.top.bottom.right.equalToSuperview()
+        }
+        
+        self.booksTitleLabel.snp.makeConstraints {
+            $0.top.left.right.equalToSuperview()
+        }
+        
+        self.booksPublishingYearLabel.snp.makeConstraints {
+            $0.top.equalTo(self.booksTitleLabel.snp.bottom)
+            $0.bottom.left.right.equalToSuperview()
+        }
+    }
+    
+    func setCellView(displayData: BooksListViewController.DisplayData) {
+        if let bookImage = displayData.imageCoverData {
+            self.booksCoverImageView.image = UIImage(data: bookImage)
+        } else {
+            self.booksCoverImageView.image = UIImage(systemName: "book.fill")
+        }
+        self.booksTitleLabel.text = displayData.title
+        self.booksPublishingYearLabel.text = "First year of publishing:\n\(String(displayData.firstPublishYear ?? 0))"
+    }
 }

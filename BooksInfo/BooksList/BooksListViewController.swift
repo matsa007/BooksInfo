@@ -52,10 +52,7 @@ class BooksListViewController: UIViewController {
     
     private func setConstraints() {
         self.booksListTableView.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.left.equalToSuperview()
-            $0.right.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.edges.equalToSuperview()
         }
     }
     
@@ -129,7 +126,8 @@ extension BooksListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "BooksListTableViewCell", for: indexPath)
                 as? BooksListTableViewCell else { return UITableViewCell() }
-        
+        let displayData = self.displayData[indexPath.row]
+        cell.setCellView(displayData: displayData)
         return cell
     }
     
