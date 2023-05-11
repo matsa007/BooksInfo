@@ -7,7 +7,16 @@
 
 import Foundation
 
-struct BookDetailsModel: Codable {
+struct BookDetailsModelTypeA: Codable {
     let title: String
     let description: String?
+}
+
+struct BookDeatailsModelNewTypeB: Codable {
+    struct Description: Codable {
+        let value: String
+    }
+    
+    let title: String
+    let description: Description
 }

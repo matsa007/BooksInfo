@@ -70,7 +70,7 @@ final class BookDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .green
-        self.fetchBookDetailsData()
+        self.fetchBookDetailsDataTypeA()
         
         self.view.addSubview(self.bookCoverImage)
         self.bookCoverImage.snp.makeConstraints {
@@ -80,14 +80,13 @@ final class BookDetailsViewController: UIViewController {
     
     // MARK: - Fetch Data
     
-    private func fetchBookDetailsData() {
-        NetworkManager.shared.makeRequest(to: BooksApiURLs.bookDetailsUrl.rawValue.createBookDetailsUrl(bookKey: "/works/OL81626W")) { [weak self] (result: Result<BookDetailsModel, Error>) in
+    private func fetchBookDetailsDataTypeA() {
+        NetworkManager.shared.makeRequest(to: BooksApiURLs.bookDetailsUrl.rawValue.createBookDetailsUrl(bookKey: self.bookKey)) { [weak self] (result: Result<BookDetailsModelTypeA, Error>) in
             guard let self = self else { return }
             switch result {
             case .success(let data):
                 DispatchQueue.main.async { [weak self] in
                     guard let self else { return }
-                    print(data)
                     self.displayModel.title = data.title
                     self.displayModel.description = data.description
                     self.displayModel.imageUrl = self.imageUrl
@@ -95,8 +94,27 @@ final class BookDetailsViewController: UIViewController {
                     self.displayModel.rating = self.rating
                     self.fetchCoversImageData(bookImageUrl: self.imageUrl)
                 }
+            case .failure:
+                self.fetchBookDetailsDataTypeB()
+            }
+        }
+    }
+    
+    private func fetchBookDetailsDataTypeB() {
+        NetworkManager.shared.makeRequest(to: BooksApiURLs.bookDetailsUrl.rawValue.createBookDetailsUrl(bookKey: self.bookKey)) { [weak self] (result: Result<BookDeatailsModelNewTypeB, Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    self.displayModel.title = data.title
+                    self.displayModel.description = data.description.value
+                    self.displayModel.imageUrl = self.imageUrl
+                    self.displayModel.firstYear = self.firstYear
+                    self.displayModel.rating = self.rating
+                    self.fetchCoversImageData(bookImageUrl: self.imageUrl)
+                }
             case .failure(let error):
-                print(error)
                 self.alertForError(error)
             }
         }
