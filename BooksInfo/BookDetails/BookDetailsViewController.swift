@@ -38,6 +38,7 @@ final class BookDetailsViewController: UIViewController {
     private lazy var bookTitleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "HelveticaNeue-Bold", size: 20)
+        label.numberOfLines = 0
         label.textAlignment = .center
         return label
     }()
@@ -84,6 +85,8 @@ final class BookDetailsViewController: UIViewController {
         self.addSubviews()
         self.setConstraints()
     }
+    
+    // MARK: - Adding views and setting constraints
     
     private func addSubviews() {
         self.view.addSubview(self.scrollView)
@@ -191,6 +194,8 @@ final class BookDetailsViewController: UIViewController {
         }
     }
     
+    // MARK: - UI Updating
+    
     private func updateUI() {
         if let imageData = self.displayModel.image {
             self.bookCoverImage.image = UIImage(data: imageData)
@@ -198,13 +203,24 @@ final class BookDetailsViewController: UIViewController {
             self.bookCoverImage.image = UIImage(systemName: "book.fill")
         }
         
-        self.bookTitleLabel.numberOfLines = 0
-        self.bookTitleLabel.text = "\n\(self.displayModel.title ?? "NO TITLE")\n"
-        self.bookDescriptionTitle.text = self.displayModel.description
+        if let title = self.displayModel.title {
+            self.bookTitleLabel.text = "\n\(title)\n"
+        } else {
+            self.bookTitleLabel.text = "\nNO TITLE\n"
+        }
+        
+        if let description = self.displayModel.description {
+            self.bookDescriptionTitle.text = description
+        } else {
+            self.bookDescriptionTitle.text = "NO DESCRIPTION"
+        }
+        
         self.bookFirstYearTitle.text = "First published in - \(self.displayModel.firstYear) year"
         self.bookRatingLabel.text = "Book average rating is - \(self.displayModel.rating)"
     }
 }
+
+// MARK: - Extensions
 
 extension BookDetailsViewController {
     struct DisplayModel {
