@@ -22,7 +22,6 @@ final class BooksListViewController: UIViewController {
     
     private var displayData: [DisplayData] = [] {
         didSet {
-            print("DISPLAY DATA == \(self.displayData)")
             self.booksListTableView.reloadData()
         }
     }
@@ -74,8 +73,7 @@ final class BooksListViewController: UIViewController {
     
     private func fetchCoversImageData(booksList: [BookInfo]) {
         booksList.forEach { bookInfo in
-            let imgUrl = BooksApiURLs.coversApiUrlOlid.rawValue.createImageApiURL(coverEditionKey: bookInfo.coverEditionKey,
-                                                                                       sizeOfImage: .medium)
+            let imgUrl = BooksApiURLs.coversApiUrlOlid.rawValue.createImageApiURL(coverEditionKey: bookInfo.coverEditionKey, sizeOfImage: .medium)
             NetworkManager.shared.getImageData(from: imgUrl) { [weak self] (result: Result<Data, Error>) in
                 guard let self = self else { return }
                 switch result {
@@ -98,6 +96,26 @@ final class BooksListViewController: UIViewController {
 
 // MARK: - Extensions
 
+extension BooksListViewController: UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        self.displayData.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "BooksListTableViewCell", for: indexPath)
+                as? BooksListTableViewCell else { return UITableViewCell() }
+        let displayData = self.displayData[indexPath.row]
+        cell.setCellView(displayData: displayData)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let bookInfo = self.displayData[indexPath.row]
+        let bookDetailsVc = BookDetailsViewController(bookKey: bookInfo.bookKey, imageUrl: bookInfo.imageUrl, firstYear: bookInfo.firstPublishYear ?? 0, rating: bookInfo.bookRating)
+        self.present(bookDetailsVc, animated: true)
+    }
+}
+
 extension BooksListViewController {
     struct DisplayData {
         let title: String
@@ -115,26 +133,5 @@ extension BooksListViewController {
             self.imageUrl = data.coverEditionKey
             self.bookRating = data.ratingsAverage ?? 0.0
         }
-    }
-}
-
-extension BooksListViewController: UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("NUMBER OF ROWS == \(self.displayData.count)")
-        return self.displayData.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "BooksListTableViewCell", for: indexPath)
-                as? BooksListTableViewCell else { return UITableViewCell() }
-        let displayData = self.displayData[indexPath.row]
-        cell.setCellView(displayData: displayData)
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            let bookInfo = self.displayData[indexPath.row]
-            let bookDetailsVc = BookDetailsViewController(bookKey: bookInfo.bookKey, imageUrl: bookInfo.imageUrl, firstYear: bookInfo.firstPublishYear ?? 0, rating: bookInfo.bookRating)
-            self.present(bookDetailsVc, animated: true)
     }
 }

@@ -12,12 +12,45 @@ final class BookDetailsViewController: UIViewController {
     
     // MARK: - Parameters
     
-    private var displayModel = DisplayModel(title: "", description: "", imageUrl: "", firstYear: 0, rating: 0)
+    private var displayModel = DisplayModel(title: "", description: "", imageUrl: "", firstYear: 0, rating: 0) {
+        didSet {
+            self.updateUI()
+        }
+    }
     
     private let bookKey: String
     private let imageUrl: String
     private let firstYear: Int
     private let rating: Double
+    
+    // MARK: - GUI
+    
+    private lazy var bookCoverImage: UIImageView = {
+        let imageView = UIImageView()
+        return imageView
+    }()
+    
+    private lazy var bookTitleLabel: UILabel = {
+        let label = UILabel()
+        return label
+    }()
+    
+    private lazy var bookDescriptionTitle: UILabel = {
+        let label = UILabel()
+        return label
+    }()
+    
+    private lazy var bookFirstYearTitle: UILabel = {
+        let label = UILabel()
+        return label
+    }()
+    
+    private lazy var bookRatingLabel: UILabel = {
+        let label = UILabel()
+        return label
+    }()
+    
+    // MARK: - Initialization
     
     init(bookKey: String, imageUrl: String, firstYear: Int, rating: Double) {
         self.bookKey = bookKey
@@ -33,11 +66,16 @@ final class BookDetailsViewController: UIViewController {
     }
     
     // MARK: - ViewController Life Cycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .green
         self.fetchBookDetailsData()
+        
+        self.view.addSubview(self.bookCoverImage)
+        self.bookCoverImage.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
     }
     
     // MARK: - Fetch Data
@@ -50,12 +88,45 @@ final class BookDetailsViewController: UIViewController {
                 DispatchQueue.main.async { [weak self] in
                     guard let self else { return }
                     print(data)
-            
+                    self.displayModel.title = data.title
+                    self.displayModel.description = data.description
+                    self.displayModel.imageUrl = self.imageUrl
+                    self.displayModel.firstYear = self.firstYear
+                    self.displayModel.rating = self.rating
+                    self.fetchCoversImageData(bookImageUrl: self.imageUrl)
                 }
             case .failure(let error):
                 print(error)
                 self.alertForError(error)
             }
+        }
+    }
+    
+    private func fetchCoversImageData(bookImageUrl: String) {
+        let imgUrl = BooksApiURLs.coversApiUrlOlid.rawValue.createImageApiURL(coverEditionKey: bookImageUrl, sizeOfImage: .large)
+        NetworkManager.shared.getImageData(from: imgUrl) { [weak self] (result: Result<Data, Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    self.displayModel.image = data
+                }
+            case .failure(let error):
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    self.displayModel.image = nil
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    private func updateUI() {
+        if let imageData = self.displayModel.image {
+            self.bookCoverImage.image = UIImage(data: imageData)
+        } else {
+            self.bookCoverImage.image = UIImage(systemName: "book.fill")
         }
     }
 }
