@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class BooksListViewController: UIViewController {
+final class BooksListViewController: UIViewController {
     
     // MARK: - Parameters
     
@@ -34,7 +34,7 @@ class BooksListViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(BooksListTableViewCell.self, forCellReuseIdentifier: "BooksListTableViewCell")
-        tableView.backgroundColor = .red
+        tableView.backgroundColor = .clear
         return tableView
     }()
     
@@ -42,7 +42,7 @@ class BooksListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .lightGray
+        self.view.backgroundColor = .white
         self.view.addSubview(self.booksListTableView)
         self.setConstraints()
         self.fetchBooksListData()
@@ -117,7 +117,7 @@ extension BooksListViewController {
     }
 }
 
-extension BooksListViewController: UITableViewDelegate, UITableViewDataSource {
+extension BooksListViewController: UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print("NUMBER OF ROWS == \(self.displayData.count)")
         return self.displayData.count
@@ -131,5 +131,10 @@ extension BooksListViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+            let bookInfo = self.displayData[indexPath.row]
+            let bookDetailsVc = BookDetailsViewController()
+            self.present(bookDetailsVc, animated: true)
+    }
     
 }

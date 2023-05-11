@@ -8,6 +8,6 @@
 import Foundation
 
 enum BooksApiURLs: String {
-    case booksInfoApiURL = "https://openlibrary.org/search.json?author=J.K.+Rowling&limit=5&offset=0"
+    case booksInfoApiURL = "https://openlibrary.org/search.json?author=Stephen+King&limit=10&offset=0"
     case coversApiUrlOlid = "https://covers.openlibrary.org/b/olid/"
 }
