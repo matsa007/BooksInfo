@@ -25,6 +25,11 @@ final class BookDetailsViewController: UIViewController {
     
     // MARK: - GUI
     
+    private lazy var scrollView: UIScrollView = {
+        let view = UIScrollView()
+        return view
+    }()
+    
     private lazy var bookCoverImage: UIImageView = {
         let imageView = UIImageView()
         return imageView
@@ -32,21 +37,26 @@ final class BookDetailsViewController: UIViewController {
     
     private lazy var bookTitleLabel: UILabel = {
         let label = UILabel()
+        label.font = UIFont(name: "HelveticaNeue-Bold", size: 20)
+        label.textAlignment = .center
         return label
     }()
     
     private lazy var bookDescriptionTitle: UILabel = {
         let label = UILabel()
+        label.numberOfLines = 0
         return label
     }()
     
     private lazy var bookFirstYearTitle: UILabel = {
         let label = UILabel()
+        label.font = UIFont(name: "HelveticaNeue-Bold", size: 17)
         return label
     }()
     
     private lazy var bookRatingLabel: UILabel = {
         let label = UILabel()
+        label.font = UIFont(name: "HelveticaNeue-Bold", size: 17)
         return label
     }()
     
@@ -69,12 +79,53 @@ final class BookDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .green
+        self.view.backgroundColor = .white
         self.fetchBookDetailsDataTypeA()
-        
-        self.view.addSubview(self.bookCoverImage)
-        self.bookCoverImage.snp.makeConstraints {
+        self.addSubviews()
+        self.setConstraints()
+    }
+    
+    private func addSubviews() {
+        self.view.addSubview(self.scrollView)
+        self.scrollView.addSubview(bookTitleLabel)
+        self.scrollView.addSubview(self.bookCoverImage)
+        self.scrollView.addSubview(self.bookFirstYearTitle)
+        self.scrollView.addSubview(self.bookRatingLabel)
+        self.scrollView.addSubview(self.bookDescriptionTitle)
+        self.scrollView.layoutIfNeeded()
+    }
+    
+    private func setConstraints() {
+        self.scrollView.contentSize = self.view.bounds.size
+        self.scrollView.snp.makeConstraints {
             $0.edges.equalToSuperview()
+        }
+        
+        self.bookTitleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.width.equalToSuperview()
+        }
+        
+        self.bookCoverImage.snp.makeConstraints {
+            $0.top.equalTo(self.bookTitleLabel.snp.bottom)
+            $0.width.equalToSuperview()
+            $0.height.equalToSuperview().dividedBy(2)
+        }
+        
+        self.bookFirstYearTitle.snp.makeConstraints {
+            $0.top.equalTo(self.bookCoverImage.snp.bottom)
+            $0.width.equalToSuperview()
+        }
+        
+        self.bookRatingLabel.snp.makeConstraints {
+            $0.top.equalTo(self.bookFirstYearTitle.snp.bottom)
+            $0.width.equalToSuperview()
+        }
+        
+        self.bookDescriptionTitle.snp.makeConstraints {
+            $0.top.equalTo(self.bookRatingLabel.snp.bottom)
+            $0.width.equalToSuperview()
+            $0.height.equalToSuperview()
         }
     }
     
@@ -146,6 +197,12 @@ final class BookDetailsViewController: UIViewController {
         } else {
             self.bookCoverImage.image = UIImage(systemName: "book.fill")
         }
+        
+        self.bookTitleLabel.numberOfLines = 0
+        self.bookTitleLabel.text = "\n\(self.displayModel.title ?? "NO TITLE")\n"
+        self.bookDescriptionTitle.text = self.displayModel.description
+        self.bookFirstYearTitle.text = "First published in - \(self.displayModel.firstYear) year"
+        self.bookRatingLabel.text = "Book average rating is - \(self.displayModel.rating)"
     }
 }
 
