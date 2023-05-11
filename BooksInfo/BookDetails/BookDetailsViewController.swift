@@ -7,23 +7,33 @@
 
 import UIKit
 
-class BookDetailsViewController: UIViewController {
+final class BookDetailsViewController: UIViewController {
+    
+    // MARK: - ViewController Life Cycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .green
-        // Do any additional setup after loading the view.
+        self.fetchBookDetailsData()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    // MARK: - Fetch Data
+    
+    private func fetchBookDetailsData() {
+        NetworkManager.shared.makeRequest(to: BooksApiURLs.bookDetailsUrl.rawValue.createBookDetailsUrl(bookKey: "/works/OL81626W")) { [weak self] (result: Result<BookDetailsModel, Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    print(data)
+            
+                }
+            case .failure(let error):
+                print(error)
+                self.alertForError(error)
+            }
+        }
     }
-    */
 
 }

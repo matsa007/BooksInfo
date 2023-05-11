@@ -7,3 +7,7 @@
 
 import Foundation
 
+struct BookDetailsModel: Codable {
+    let title: String
+    let description: String?
+}
