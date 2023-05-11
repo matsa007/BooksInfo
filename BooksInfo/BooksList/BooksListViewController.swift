@@ -74,19 +74,20 @@ final class BooksListViewController: UIViewController {
     
     private func fetchCoversImageData(booksList: [BookInfo]) {
         booksList.forEach { bookInfo in
-            let imgUrl = BooksApiURLs.coversApiUrlOlid.rawValue.createImageApiURL(coverEditionKey: bookInfo.coverEditionKey, sizeOfImage: .medium)
+            let imgUrl = BooksApiURLs.coversApiUrlOlid.rawValue.createImageApiURL(coverEditionKey: bookInfo.coverEditionKey,
+                                                                                       sizeOfImage: .medium)
             NetworkManager.shared.getImageData(from: imgUrl) { [weak self] (result: Result<Data, Error>) in
                 guard let self = self else { return }
                 switch result {
-                case .success(let imageData):
+                case .success(let data):
                     DispatchQueue.main.async { [weak self] in
                         guard let self else { return }
-                        self.displayData.append(.init(bookInfoData: bookInfo, imageCoverData: imageData))
+                        self.displayData.append(.init(data: bookInfo, imageData: data))
                     }
                 case .failure(let error):
                     DispatchQueue.main.async { [weak self] in
                         guard let self else { return }
-                        self.displayData.append(.init(bookInfoData: bookInfo, imageCoverData: nil))
+                        self.displayData.append(.init(data: bookInfo, imageData: nil))
                         print(error.localizedDescription)
                     }
                 }
@@ -101,18 +102,18 @@ extension BooksListViewController {
     struct DisplayData {
         let title: String
         let firstPublishYear: Int?
-        let bookKey: String
-        let bookRating: Double?
-        let coverEditionKey: String
         let imageCoverData: Data?
+        let bookKey: String
+        let imageUrl: String
+        let bookRating: Double
         
-        init(bookInfoData: BookInfo, imageCoverData: Data?) {
-            self.title = bookInfoData.title
-            self.firstPublishYear = bookInfoData.firstPublishYear
-            self.bookKey = bookInfoData.key
-            self.bookRating = bookInfoData.ratingsAverage
-            self.coverEditionKey = bookInfoData.coverEditionKey
-            self.imageCoverData = imageCoverData
+        init(data: BookInfo, imageData: Data?) {
+            self.title = data.title
+            self.firstPublishYear = data.firstPublishYear
+            self.imageCoverData = imageData
+            self.bookKey = data.key
+            self.imageUrl = data.coverEditionKey
+            self.bookRating = data.ratingsAverage ?? 0.0
         }
     }
 }
@@ -133,8 +134,7 @@ extension BooksListViewController: UITableViewDelegate, UITableViewDataSource, U
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
             let bookInfo = self.displayData[indexPath.row]
-            let bookDetailsVc = BookDetailsViewController()
+            let bookDetailsVc = BookDetailsViewController(bookKey: bookInfo.bookKey, imageUrl: bookInfo.imageUrl, firstYear: bookInfo.firstPublishYear ?? 0, rating: bookInfo.bookRating)
             self.present(bookDetailsVc, animated: true)
     }
-    
 }
