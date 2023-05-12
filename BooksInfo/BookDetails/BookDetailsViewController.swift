@@ -61,6 +61,11 @@ final class BookDetailsViewController: UIViewController {
         return label
     }()
     
+    private lazy var bookRatingImageView: UIImageView = {
+        let imageView = UIImageView()
+        return imageView
+    }()
+    
     // MARK: - Initialization
     
     init(bookKey: String, imageUrl: String, firstYear: Int, rating: Double) {
@@ -94,6 +99,7 @@ final class BookDetailsViewController: UIViewController {
         self.scrollView.addSubview(self.bookCoverImage)
         self.scrollView.addSubview(self.bookFirstYearTitle)
         self.scrollView.addSubview(self.bookRatingLabel)
+        self.scrollView.addSubview(self.bookRatingImageView)
         self.scrollView.addSubview(self.bookDescriptionTitle)
         self.scrollView.layoutIfNeeded()
     }
@@ -122,7 +128,16 @@ final class BookDetailsViewController: UIViewController {
         
         self.bookRatingLabel.snp.makeConstraints {
             $0.top.equalTo(self.bookFirstYearTitle.snp.bottom)
-            $0.width.equalToSuperview()
+            $0.left.equalToSuperview()
+            $0.width.equalTo(self.view.frame.width*3/4)
+            $0.height.equalTo(100)
+        }
+        
+        self.bookRatingImageView.snp.makeConstraints {
+            $0.top.equalTo(self.bookFirstYearTitle.snp.bottom)
+            $0.left.equalTo(self.bookRatingLabel.snp.right)
+            $0.width.equalToSuperview().dividedBy(4)
+            $0.height.equalTo(self.bookRatingLabel.snp.height)
         }
         
         self.bookDescriptionTitle.snp.makeConstraints {
@@ -216,7 +231,28 @@ final class BookDetailsViewController: UIViewController {
         }
         
         self.bookFirstYearTitle.text = "First published in - \(self.displayModel.firstYear) year"
-        self.bookRatingLabel.text = "Book average rating is - \(self.displayModel.rating)"
+        self.bookRatingLabel.text = "Rating is - \(self.displayModel.rating)"
+        self.ratingImageUpdating()
+    }
+    
+    private func ratingImageUpdating() {
+        let rating = self.displayModel.rating
+        switch rating {
+        case ..<1:
+            self.bookRatingImageView.image = UIImage(named: "ratingZero")
+        case 1..<2:
+            self.bookRatingImageView.image = UIImage(named: "ratingOne")
+        case 2..<3:
+            self.bookRatingImageView.image = UIImage(named: "ratingTwo")
+        case 3..<4:
+            self.bookRatingImageView.image = UIImage(named: "ratingThree")
+        case 4..<4.5:
+            self.bookRatingImageView.image = UIImage(named: "ratingFour")
+        case 4.5...:
+            self.bookRatingImageView.image = UIImage(named: "ratingFive")
+        default:
+            self.bookRatingImageView.image = UIImage(named: "ratingZero")
+        }
     }
 }
 
