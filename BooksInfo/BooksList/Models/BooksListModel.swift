@@ -26,7 +26,6 @@ struct BooksListModel: Codable {
     
     let numFound: Int
     let start: Int
-    let numFoundExact: Bool
     let docs: [BookInfo]
     let offset: Int
 }

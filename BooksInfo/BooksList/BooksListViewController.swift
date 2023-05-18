@@ -26,6 +26,10 @@ final class BooksListViewController: UIViewController {
         }
     }
     
+    let booksLoadingLimit: Int = 10
+    var offsetIndex: Int = 0
+    var booksFound: Int?
+    
     // MARK: - GUI
     
     private lazy var booksListTableView: UITableView = {
@@ -33,7 +37,7 @@ final class BooksListViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(BooksListTableViewCell.self, forCellReuseIdentifier: "BooksListTableViewCell")
-        tableView.backgroundColor = .clear
+        tableView.backgroundColor = .lightGray
         return tableView
     }()
     
@@ -41,7 +45,7 @@ final class BooksListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = .lightGray
         self.view.addSubview(self.booksListTableView)
         self.setConstraints()
         self.fetchBooksListData()
@@ -58,12 +62,13 @@ final class BooksListViewController: UIViewController {
     // MARK: - Fetch Data
     
     private func fetchBooksListData() {
-        NetworkManager.shared.makeRequest(to: BooksApiURLs.booksInfoApiURL.rawValue) { [weak self] (result: Result<BooksListModel, Error>) in
+        NetworkManager.shared.makeRequest(to: BooksApiURLs.booksInfoApiURL.rawValue.createBooksListApiURL(limit: booksLoadingLimit, offset: offsetIndex)) { [weak self] (result: Result<BooksListModel, Error>) in
             guard let self else { return }
             switch result {
             case .success(let data):
                 DispatchQueue.main.async {
                     self.booksList = data.docs
+                    self.booksFound = data.numFound
                 }
             case .failure(let error):
                 self.alertForError(error)

@@ -46,6 +46,7 @@ final class BookDetailsViewController: UIViewController {
     private lazy var bookDescriptionTitle: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
+        label.font = UIFont(name: "HelveticaNeue-Bold", size: 17)
         return label
     }()
     
@@ -85,7 +86,7 @@ final class BookDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = .lightGray
         self.fetchBookDetailsDataTypeA()
         self.addSubviews()
         self.setConstraints()
@@ -122,7 +123,7 @@ final class BookDetailsViewController: UIViewController {
         }
         
         self.bookFirstYearTitle.snp.makeConstraints {
-            $0.top.equalTo(self.bookCoverImage.snp.bottom)
+            $0.top.equalTo(self.bookCoverImage.snp.bottom).offset(10)
             $0.width.equalToSuperview()
         }
         
@@ -143,7 +144,6 @@ final class BookDetailsViewController: UIViewController {
         self.bookDescriptionTitle.snp.makeConstraints {
             $0.top.equalTo(self.bookRatingLabel.snp.bottom)
             $0.width.equalToSuperview()
-            $0.height.equalToSuperview()
         }
     }
     
@@ -225,40 +225,40 @@ final class BookDetailsViewController: UIViewController {
         }
         
         if let description = self.displayModel.description {
-            self.bookDescriptionTitle.text = description
+            self.bookDescriptionTitle.text = "Description:\n\n\n\(description)"
         } else {
             self.bookDescriptionTitle.text = "NO DESCRIPTION"
         }
         
-        self.bookFirstYearTitle.text = "First published in - \(self.displayModel.firstYear) year"
+        self.bookFirstYearTitle.text = "First published in \(self.displayModel.firstYear) year"
         self.bookRatingLabel.text = "Rating is - \(self.displayModel.rating)"
-        self.ratingImageUpdating()
+        self.ratingImageUpdating(rating: self.displayModel.rating)
     }
     
-    private func ratingImageUpdating() {
-        let rating = self.displayModel.rating
+    private func ratingImageUpdating(rating: Double) {
+        let ratingImageName: RatingImageName
         switch rating {
-        case ..<1:
-            self.bookRatingImageView.image = UIImage(named: "ratingZero")
         case 1..<2:
-            self.bookRatingImageView.image = UIImage(named: "ratingOne")
+            ratingImageName = .ratingOne
         case 2..<3:
-            self.bookRatingImageView.image = UIImage(named: "ratingTwo")
+            ratingImageName = .ratingTwo
         case 3..<4:
-            self.bookRatingImageView.image = UIImage(named: "ratingThree")
+            ratingImageName = .ratingThree
         case 4..<4.5:
-            self.bookRatingImageView.image = UIImage(named: "ratingFour")
+            ratingImageName = .ratingFour
         case 4.5...:
-            self.bookRatingImageView.image = UIImage(named: "ratingFive")
+            ratingImageName = .ratingFive
         default:
-            self.bookRatingImageView.image = UIImage(named: "ratingZero")
+            ratingImageName = .ratingZero
         }
+        
+        self.bookRatingImageView.image = UIImage(named: ratingImageName.rawValue)
     }
 }
 
 // MARK: - Extensions
 
-extension BookDetailsViewController {
+private extension BookDetailsViewController {
     struct DisplayModel {
         var title: String?
         var description: String?
@@ -266,5 +266,16 @@ extension BookDetailsViewController {
         var firstYear: Int
         var rating: Double
         var image: Data?
+    }
+}
+
+private extension BookDetailsViewController {
+    enum RatingImageName: String {
+        case ratingZero
+        case ratingOne
+        case ratingTwo
+        case ratingThree
+        case ratingFour
+        case ratingFive
     }
 }

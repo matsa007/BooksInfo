@@ -13,7 +13,6 @@ final class BooksListTableViewCell: UITableViewCell {
     
     private lazy var commonBookInfoStackView : UIStackView = {
         let stackView = UIStackView()
-        stackView.spacing = 20
         stackView.axis = .horizontal
         return stackView
     }()
@@ -21,20 +20,22 @@ final class BooksListTableViewCell: UITableViewCell {
     private lazy var booksCoverImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
+        imageView.backgroundColor = .lightGray
         imageView.clipsToBounds = true
         return imageView
     }()
     
     private lazy var bookInfoStackView : UIStackView = {
         let stackView = UIStackView()
-        stackView.spacing = 20
         return stackView
     }()
     
     private lazy var booksTitleLabel: UILabel = {
         let label = UILabel()
+        label.backgroundColor = .lightGray
         label.textAlignment = .left
         label.numberOfLines = 0
+        label.font = UIFont(name: "HelveticaNeue-Bold", size: 20)
         return label
     }()
     
@@ -42,6 +43,7 @@ final class BooksListTableViewCell: UITableViewCell {
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .left
+        label.backgroundColor = .lightGray
         return label
     }()
     
@@ -97,6 +99,6 @@ final class BooksListTableViewCell: UITableViewCell {
             self.booksCoverImageView.image = UIImage(systemName: "book.fill")
         }
         self.booksTitleLabel.text = displayData.title
-        self.booksPublishingYearLabel.text = "First year of publishing:\n\(String(displayData.firstPublishYear ?? 0))"
+        self.booksPublishingYearLabel.text = "First year of publishing: \n\(String(displayData.firstPublishYear ?? 0))"
     }
 }

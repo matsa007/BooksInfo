@@ -14,6 +14,10 @@ enum SizeOfImages: String {
 }
 
 extension String {
+    func createBooksListApiURL(limit: Int, offset: Int) -> String {
+        String(self + "&limit=\(limit)" + "&offset=\(offset)")
+    }
+    
     func createImageApiURL(coverEditionKey: String, sizeOfImage: SizeOfImages) -> String {
         String(self + coverEditionKey + sizeOfImage.rawValue)
     }
