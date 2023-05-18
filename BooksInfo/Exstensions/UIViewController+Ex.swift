@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 extension UIViewController {
     func alertForError(_ error: Error) {
@@ -16,10 +17,21 @@ extension UIViewController {
         }
     }
     
-    func alertNoDataWillMoreLoaded() {
-        let alert = UIAlertController(title: "SORRY", message: "There are no more books for vieing ...", preferredStyle: .alert)
+    func alertNoDataWillMoreLoaded(_ message: String) {
+        let alert = UIAlertController(title: "SORRY", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func createSpinnerFooter() -> UIView {
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 100))
+        let spinner = UIActivityIndicatorView()
+        spinner.center = footerView.center
+        spinner.color = .white
+        footerView.addSubview(spinner)
+        spinner.startAnimating()
+        
+        return footerView
     }
 }
 

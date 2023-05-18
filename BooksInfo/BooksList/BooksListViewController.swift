@@ -88,6 +88,7 @@ final class BooksListViewController: UIViewController {
                 switch result {
                 case .success(let data):
                     DispatchQueue.main.async {
+                        self.booksListTableView.tableFooterView = nil
                         self.booksList = data.docs
                         self.booksFound = data.numFound
                         self.isLoading = false
@@ -97,7 +98,7 @@ final class BooksListViewController: UIViewController {
                 }
             }
         } else {
-            self.alertNoDataWillMoreLoaded()
+            self.alertNoDataWillMoreLoaded("There are no more books for vieing ...")
         }
     }
     
@@ -148,6 +149,9 @@ extension BooksListViewController: UITableViewDelegate, UITableViewDataSource, U
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         if offsetY > (self.booksListTableView.contentSize.height - scrollView.frame.size.height + 100) && !isLoading {
+            
+            self.booksListTableView.tableFooterView = self.createSpinnerFooter()
+            
             self.fetchMoreBooksListData()
         }
     }
