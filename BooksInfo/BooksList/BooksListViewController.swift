@@ -26,9 +26,10 @@ final class BooksListViewController: UIViewController {
         }
     }
     
-    let booksLoadingLimit: Int = 10
-    var offsetIndex: Int = 0
-    var booksFound: Int?
+    private let booksLoadingLimit: Int = 10
+    private var offsetIndex: Int = 0
+    private var booksFound: Int?
+    private var isLoading = true
     
     // MARK: - GUI
     
@@ -69,10 +70,34 @@ final class BooksListViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.booksList = data.docs
                     self.booksFound = data.numFound
+                    self.isLoading = false
                 }
             case .failure(let error):
                 self.alertForError(error)
             }
+        }
+    }
+    
+    private func fetchMoreBooksListData() {
+        self.offsetIndex += 10
+        self.isLoading = true
+        let booksQuantity = (self.booksFound ?? 0) - self.booksLoadingLimit - self.offsetIndex
+        if booksQuantity > 0 {
+            NetworkManager.shared.makeRequest(to: BooksApiURLs.booksInfoApiURL.rawValue.createBooksListApiURL(limit: booksLoadingLimit, offset: offsetIndex)) { [weak self] (result: Result<BooksListModel, Error>) in
+                guard let self else { return }
+                switch result {
+                case .success(let data):
+                    DispatchQueue.main.async {
+                        self.booksList = data.docs
+                        self.booksFound = data.numFound
+                        self.isLoading = false
+                    }
+                case .failure(let error):
+                    self.alertForError(error)
+                }
+            }
+        } else {
+            self.alertNoDataWillMoreLoaded()
         }
     }
     
@@ -118,6 +143,13 @@ extension BooksListViewController: UITableViewDelegate, UITableViewDataSource, U
         let bookInfo = self.displayData[indexPath.row]
         let bookDetailsVc = BookDetailsViewController(bookKey: bookInfo.bookKey, imageUrl: bookInfo.imageUrl, firstYear: bookInfo.firstPublishYear ?? 0, rating: bookInfo.bookRating)
         self.present(bookDetailsVc, animated: true)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        if offsetY > (self.booksListTableView.contentSize.height - scrollView.frame.size.height + 100) && !isLoading {
+            self.fetchMoreBooksListData()
+        }
     }
 }
 

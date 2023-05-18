@@ -74,7 +74,6 @@ final class BookDetailsViewController: UIViewController {
         self.imageUrl = imageUrl
         self.firstYear = firstYear
         self.rating = rating
-        
         super.init(nibName: nil, bundle: nil)
     }
     

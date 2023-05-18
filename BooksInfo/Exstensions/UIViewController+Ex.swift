@@ -15,5 +15,11 @@ extension UIViewController {
             self.present(alert, animated: true, completion: nil)
         }
     }
+    
+    func alertNoDataWillMoreLoaded() {
+        let alert = UIAlertController(title: "SORRY", message: "There are no more books for vieing ...", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
