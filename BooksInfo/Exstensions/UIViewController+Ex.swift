@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SnapKit
 
 extension UIViewController {
     func alertForError(_ error: Error) {
@@ -30,7 +29,6 @@ extension UIViewController {
         spinner.color = .white
         footerView.addSubview(spinner)
         spinner.startAnimating()
-        
         return footerView
     }
 }

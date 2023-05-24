@@ -7,7 +7,7 @@
 
 import Foundation
 
-class NetworkManager {
+final class NetworkManager {
     static var shared = NetworkManager()
     
     func makeRequest<T: Codable>(to endpoint: String, completion: @escaping (Result<T, Error>) -> ()) {
@@ -61,7 +61,7 @@ class NetworkManager {
                 completion(.failure(NetworkError.statusCode(httpResponse.statusCode)))
                 return
             }
-            guard let data = data else { return }
+            guard let data else { return }
             completion(.success(data))
         }
         task.resume()

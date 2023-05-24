@@ -150,7 +150,7 @@ final class BookDetailsViewController: UIViewController {
     
     private func fetchBookDetailsDataTypeA() {
         NetworkManager.shared.makeRequest(to: BooksApiURLs.bookDetailsUrl.rawValue.createBookDetailsUrl(bookKey: self.bookKey)) { [weak self] (result: Result<BookDetailsModelTypeA, Error>) in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let data):
                 DispatchQueue.main.async { [weak self] in
@@ -170,7 +170,7 @@ final class BookDetailsViewController: UIViewController {
     
     private func fetchBookDetailsDataTypeB() {
         NetworkManager.shared.makeRequest(to: BooksApiURLs.bookDetailsUrl.rawValue.createBookDetailsUrl(bookKey: self.bookKey)) { [weak self] (result: Result<BookDeatailsModelNewTypeB, Error>) in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let data):
                 DispatchQueue.main.async { [weak self] in
@@ -191,7 +191,7 @@ final class BookDetailsViewController: UIViewController {
     private func fetchCoversImageData(bookImageUrl: String) {
         let imgUrl = BooksApiURLs.coversApiUrlOlid.rawValue.createImageApiURL(coverEditionKey: bookImageUrl, sizeOfImage: .large)
         NetworkManager.shared.getImageData(from: imgUrl) { [weak self] (result: Result<Data, Error>) in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let data):
                 DispatchQueue.main.async { [weak self] in
@@ -266,9 +266,7 @@ private extension BookDetailsViewController {
         var rating: Double
         var image: Data?
     }
-}
 
-private extension BookDetailsViewController {
     enum RatingImageName: String {
         case ratingZero
         case ratingOne

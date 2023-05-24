@@ -47,6 +47,8 @@ final class BooksListTableViewCell: UITableViewCell {
         return label
     }()
     
+    // MARK: - Lifecycle
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         self.addSubviews()
@@ -59,6 +61,8 @@ final class BooksListTableViewCell: UITableViewCell {
         self.booksPublishingYearLabel.text = nil
         self.booksCoverImageView.image = nil
     }
+    
+    // MARK: - Constraints
     
     private func addSubviews() {
         self.contentView.addSubview(self.commonBookInfoStackView)
@@ -91,6 +95,8 @@ final class BooksListTableViewCell: UITableViewCell {
             $0.bottom.left.right.equalToSuperview()
         }
     }
+    
+    // MARK: - UI Updating
     
     func setCellView(displayData: BooksListViewController.DisplayData) {
         if let bookImage = displayData.imageCoverData {

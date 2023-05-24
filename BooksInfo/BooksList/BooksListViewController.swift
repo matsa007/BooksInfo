@@ -42,7 +42,7 @@ final class BooksListViewController: UIViewController {
         return tableView
     }()
     
-    // MARK: - ViewController Life Cycle
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,7 +90,6 @@ final class BooksListViewController: UIViewController {
                     DispatchQueue.main.async {
                         self.booksListTableView.tableFooterView = nil
                         self.booksList = data.docs
-                        self.booksFound = data.numFound
                         self.isLoading = false
                     }
                 case .failure(let error):
@@ -99,6 +98,7 @@ final class BooksListViewController: UIViewController {
             }
         } else {
             self.alertNoDataWillMoreLoaded("There are no more books for vieing ...")
+            self.booksListTableView.tableFooterView = nil
         }
     }
     
@@ -106,7 +106,7 @@ final class BooksListViewController: UIViewController {
         booksList.forEach { bookInfo in
             let imgUrl = BooksApiURLs.coversApiUrlOlid.rawValue.createImageApiURL(coverEditionKey: bookInfo.coverEditionKey, sizeOfImage: .medium)
             NetworkManager.shared.getImageData(from: imgUrl) { [weak self] (result: Result<Data, Error>) in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch result {
                 case .success(let data):
                     DispatchQueue.main.async { [weak self] in
@@ -148,10 +148,8 @@ extension BooksListViewController: UITableViewDelegate, UITableViewDataSource, U
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        if offsetY > (self.booksListTableView.contentSize.height - scrollView.frame.size.height + 100) && !isLoading {
-            
+        if offsetY > (self.booksListTableView.contentSize.height - scrollView.frame.size.height - 100) && !isLoading {
             self.booksListTableView.tableFooterView = self.createSpinnerFooter()
-            
             self.fetchMoreBooksListData()
         }
     }
